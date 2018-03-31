@@ -2,6 +2,15 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+class Interest(models.Model):
+    name = models.CharField(max_length=128)
+    description = models.TextField()
+    color = models.CharField(max_length=128)
+
+    def __str__(self):
+        return 'Name {} '.format(self.name)
+
+
 class Event(models.Model):
     title = models.CharField(max_length=100, blank=False)
     body = models.TextField()
@@ -15,6 +24,10 @@ class Event(models.Model):
     lat = models.FloatField()
     long = models.FloatField()
     votes = models.ManyToManyField(User, through='Vote')
+    interest = models.ForeignKey(Interest)
+
+    def __str__(self):
+        return 'Title {}'.format(self.title)
 
 
 class Vote(models.Model):
@@ -23,17 +36,16 @@ class Vote(models.Model):
     sign = models.SmallIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-
-class Interest(models.Model):
-    name = models.CharField(max_length=128)
-    description = models.TextField()
-    color = models.CharField(max_length=128)
-    user = models.ManyToManyField(User, through='UserInterest')
+    def __str__(self):
+        return 'User {} voted for {}'.format(self.user, self.event)
 
 
 class UserInterest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     interest = models.ForeignKey(Interest, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'User {} is interested in {}'.format(self.user, self.interest)
 
 
 class UserCheckIn(models.Model):
@@ -41,3 +53,6 @@ class UserCheckIn(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(null=True)
+
+    def __str__(self):
+        return 'User {} checked in {}'.format(self.user, self.event)

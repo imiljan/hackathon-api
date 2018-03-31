@@ -103,3 +103,10 @@ ENV/
 #PyCharm
 .idea/
 
+#Images
+LiveMaps/static/images/*
+
+#DB
+LiveMaps/db.sqlite3
+
+
