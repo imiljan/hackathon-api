@@ -10,7 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
-import os, datetime
+import datetime
+import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -161,5 +162,9 @@ CORS_ALLOW_METHODS = (
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=5),
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'api.views.jwt_response_payload_handler',
-
 }
+
+
+DATETIME_INPUT_FORMATS = ['%Y-%m-%d', ]
+
+DATETIME_FORMAT = ['%Y-%m-%d', ]

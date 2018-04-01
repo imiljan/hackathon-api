@@ -1,13 +1,14 @@
+import os
 import time
 
-import os
+from drf_extra_fields.fields import Base64ImageField
+
+from api.models import Event, Vote
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from LiveMaps import settings
-from api.models import Event, Vote
 from .models import Interest
 
 
@@ -24,8 +25,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password')
-        read_only = ('id', 'date_joined',)
+        fields = ('id','username', 'first_name', 'last_name', 'email', 'password')
+        read_only = ('date_joined',)
 
     def create(self, validated_data):
         user = super().create(validated_data)
@@ -55,8 +56,9 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('id', 'title', 'body', 'image', 'address', 'hashtag', 'created_at', 'deleted_at',
-                  'start_at', 'end_at', 'lat', 'long', 'created_at_ts', 'start_at_ts', 'end_at_ts', 'interest', 'rating')
+        fields = ('id', 'title', 'body', 'image', 'address', 'hashtag', 'created_at', 'deleted', 'start_at',
+                  'end_at', 'permanent', 'lat', 'long', 'created_at_ts', 'start_at_ts', 'end_at_ts', 'interest',
+                  'rating')
 
     def get_interest(self, event):
         return Interest.objects.get(pk=event.interest_id).name
@@ -67,3 +69,13 @@ class EventSerializer(serializers.ModelSerializer):
     def get_rating(self, event):
         return Vote.objects.filter(event=event).aggregate(sum=Sum('sign'))
 
+
+class CreateEventSerializer(serializers.ModelSerializer):
+    img = Base64ImageField(required=False)
+    start_at = serializers.DateField(format='%Y-%m-%d')
+    end_at = serializers.DateField(format='%Y-%m-%d', default=None, required=False)
+
+    class Meta:
+        model = Event
+        fields = ('title', 'body', 'img', 'address', 'hashtag', 'start_at',
+                  'end_at', 'lat', 'long', 'interest', 'permanent')

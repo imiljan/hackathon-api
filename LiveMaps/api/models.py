@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class Interest(models.Model):
@@ -18,9 +18,10 @@ class Event(models.Model):
     address = models.CharField(max_length=128)
     hashtag = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    deleted_at = models.BooleanField(default=False)
-    start_at = models.DateTimeField(null=False)  # TODO SETTINGS FOR DATETIME FORMAT AND INPUT
-    end_at = models.DateTimeField(null=True)  # If null event is permanent
+    deleted = models.BooleanField(default=False)
+    permanent = models.BooleanField(default=False)
+    start_at = models.DateTimeField(null=False)
+    end_at = models.DateTimeField(null=True, blank=True)
     lat = models.FloatField()
     long = models.FloatField()
     votes = models.ManyToManyField(User, through='Vote')
