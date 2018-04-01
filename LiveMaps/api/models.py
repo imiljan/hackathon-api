@@ -52,7 +52,6 @@ class UserCheckIn(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    deleted_at = models.DateTimeField(null=True)
 
     def __str__(self):
         return 'User {} checked in {}'.format(self.user, self.event)

@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from rest_framework.decorators import detail_route
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -22,7 +23,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
 
 
-class InterestViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class InterestViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Interest.objects.all()
     serializer_class = InterestSerializer
 
