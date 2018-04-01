@@ -1,12 +1,20 @@
 from django.contrib.auth.models import User
 from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.settings import api_settings
 
-from api.serializers import UserSerializer, InterestSerializer
-from rest_framework import viewsets, mixins, status
-from .models import Interest
+from api.serializers import UserSerializer, InterestSerializer, EventSerializer
+from rest_framework import viewsets, mixins, status, generics
+from .models import Interest, Event
+
+
+def jwt_response_payload_handler(token, user=None, request=None):
+    return {
+        'token': token,
+        'user': UserSerializer(user, context={'request': request}).data
+    }
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -43,3 +51,21 @@ class UserCreateView(CreateAPIView):
             return Response(temp, status=status.HTTP_201_CREATED, headers=headers)
         return Response({'success': False, 'message': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class EventList(viewsets.ReadOnlyModelViewSet):
+    serializer_class = EventSerializer
+    queryset = Event.objects.all()
+
+
+class EventCreateView(CreateAPIView):
+    model = Event
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (JSONWebTokenAuthentication, )
+    serializer_class = EventSerializer
+
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     if serializer.is_valid():
+    #         self.perform_create(serializer)
+    #         return Response({'success': True, 'message': 'Saved'}, status=status.HTTP_201_CREATED, headers=self.get_success_headers(serializer.data))
+    #     return Response({'success': False, 'message': 'Error something', 'errors': serializer.errors}, status=status.HTTP_101_SWITCHING_PROTOCOLS)
