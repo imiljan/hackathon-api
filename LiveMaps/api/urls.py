@@ -14,5 +14,5 @@ urlpatterns = [
     url(r'^auth/register/', UserCreateView.as_view()),
     url(r'^event/', EventCreateView.as_view()),
     url(r'^events/$', event_list),
-    url(r'^events/(?P<pk>[0-9]+)/$', event_detail),
+    url(r'^events/(?P<pk>[0-9]+)$', event_detail),
 ]
