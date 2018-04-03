@@ -64,7 +64,7 @@ class EventSerializer(serializers.ModelSerializer):
         return Interest.objects.get(pk=event.interest_id).name
 
     def get_image(self, event):
-        return os.path.join("http://10.20.29.116:8888/", event.img.name)
+        return os.path.join("http://127.0.0.1:8000/", event.img.name)
 
     def get_rating(self, event):
         return Vote.objects.filter(event=event).aggregate(sum=Sum('sign'))
