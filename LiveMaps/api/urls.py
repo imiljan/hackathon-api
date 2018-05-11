@@ -1,7 +1,7 @@
-from api.views import EventCreateView, event_detail
 from django.conf.urls import include, url
 from rest_framework.routers import DefaultRouter
 
+from api.views import EventCreateView, event_detail, ReturnUser
 from .views import InterestViewSet, UserCreateView, UserViewSet, event_list
 
 router = DefaultRouter()
@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^event/', EventCreateView.as_view()),
     url(r'^events/$', event_list),
     url(r'^events/(?P<pk>[0-9]+)/$', event_detail),
+    url(r'user/', ReturnUser.as_view())
 ]

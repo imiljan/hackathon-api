@@ -1,14 +1,13 @@
 import os
 import time
 
-from drf_extra_fields.fields import Base64ImageField
-
-from api.models import Event, Vote
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
+from api.models import Event, Vote
 from .models import Interest
 
 

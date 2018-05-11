@@ -1,16 +1,18 @@
 import datetime
-from django.db.models import Q
-from rest_framework.decorators import api_view
 
-from api.serializers import EventSerializer, InterestSerializer, UserSerializer, CreateEventSerializer
 from django.contrib.auth.models import User
+from django.db.models import Q
 from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import api_view
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.settings import api_settings
+from rest_framework_jwt.utils import jwt_decode_handler
 
+from api.serializers import EventSerializer, InterestSerializer, UserSerializer, CreateEventSerializer
 from .models import Event, Interest
 
 
@@ -71,7 +73,8 @@ def event_list(request):
             events = Event.objects.filter(Q(end_at__gt=datetime.datetime.now()), Q(interest_id__in=inter)).all()
             serializer = EventSerializer(events, many=True)
             return Response(serializer.data)
-        events = Event.objects.filter(end_at__gt=datetime.datetime.now()).all()
+        # events = Event.objects.filter(end_at__gt=datetime.datetime.now()).all()
+        events = Event.objects.all()
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
 
@@ -94,3 +97,10 @@ class EventCreateView(CreateAPIView):
     authentication_classes = (JSONWebTokenAuthentication, )
     serializer_class = CreateEventSerializer
 
+
+class ReturnUser(APIView):
+    def post(self, request):
+        payload = jwt_decode_handler(request.data['token'])
+        user = User.objects.get(pk=payload['user_id'])
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
